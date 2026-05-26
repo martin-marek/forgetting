@@ -1,0 +1,17 @@
+project: ptx-sweeps
+name: model_size_v3_pretrain
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_en.bin
+  - model.save_dir=~/gcs/ptx-mini/runs/model_size_v3
+  - stop.target_loss=3.0
+  - log.every_tokens=1_000_000
+  - ${args_no_hyphens}
+
+parameters:
+  model.D:
+    values: [256, 384, 512, 640, 768]

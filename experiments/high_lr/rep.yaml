@@ -1,0 +1,20 @@
+project: ptx-sweeps
+name: high_lr_v6_rep
+method: grid
+
+command:
+  - ${env}
+  - WANDB_JOB_TYPE=pretrain
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_path=~/gcs/ptx-mini/runs/en/uht1a3m7
+  - stop.target_loss=3.3
+  - log.measure_time=True
+  - opt.peak_lr=1e-3
+  - reg.method=replace
+  - ${args_no_hyphens}
+
+parameters:
+  reg.coeff:
+    values: [0, 0.00390625, 0.00390625, 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5]

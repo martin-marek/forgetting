@@ -1,0 +1,23 @@
+project: ptx-sweeps
+name: model_size_v3_finetune
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_dir=~/gcs/ptx-mini/runs/model_size_v3
+  - stop.target_loss=2.76
+  - stop.num_epochs=10
+  - opt.peak_lr=3e-4
+  - opt.lr_decay=cosine
+  - reg.method=kl_pre
+  - ${args_no_hyphens}
+
+parameters:
+  model.load_idx: # -> 5x
+    min: 0
+    max: 4
+  reg.coeff:
+    values: [0.01, 0.022, 0.046, 0.1, 0.22, 0.46, 1, 2.2, 4.6, 10] # -> 10x

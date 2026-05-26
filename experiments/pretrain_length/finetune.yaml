@@ -1,0 +1,23 @@
+project: ptx-sweeps
+name: pretrain_length_v1_finetune
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_dir=~/gcs/ptx-mini/runs/pretrain_length_v1
+  - stop.target_loss=2.9
+  - stop.num_epochs=10
+  - opt.peak_lr=1.0e-3
+  - opt.lr_decay=cosine
+  - reg.method=kl_pre
+  - ${args_no_hyphens}
+
+parameters:
+  model.load_idx: # -> 7x
+    min: 0
+    max: 6
+  reg.coeff:
+    values: [0.01, 0.032, 0.1, 0.32, 1, 3.2, 10] # -> 7x

@@ -1,0 +1,13 @@
+project: ptx-sweeps
+name: toy_continual_v1
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/experiments/toy_continual/train.py
+  - ${args_no_hyphens}
+
+parameters:
+  reg.method:
+    values: ["null", "ntp_pre"]

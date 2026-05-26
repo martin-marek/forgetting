@@ -1,0 +1,17 @@
+project: ptx-sweeps
+name: learning_rate_v2_pretrain
+method: grid
+
+command:
+  - ${env}
+  - WANDB_JOB_TYPE=pretrain
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_en.bin
+  - model.save_dir=~/gcs/ptx-mini/runs/learning_rate_v2
+  - stop.target_loss=3.2
+  - ${args_no_hyphens}
+
+parameters:
+  opt.peak_lr:
+    values: [1.0e-2, 2.15e-3, 4.64e-3, 1.0e-3, 2.15e-4, 4.64e-4]

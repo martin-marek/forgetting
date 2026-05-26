@@ -1,0 +1,17 @@
+project: ptx-sweeps
+name: method_comp_v7_wo_replay
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/fineweb_math_4096_10/nemotron_math_20M.bin
+  - model.load_path=~/gcs/ptx-mini/runs/fwedu/42gol3bt
+  - stop.early_stop_steps=10
+  - opt.peak_lr=1e-5
+  - ${args_no_hyphens}
+
+parameters:
+  model.lora_rank:
+    values: ['null', 16] # -> 2x

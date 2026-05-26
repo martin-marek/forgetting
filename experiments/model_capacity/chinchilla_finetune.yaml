@@ -1,0 +1,24 @@
+project: ptx-sweeps
+name: model_capacity_v2_finetune_chinchilla
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_path=~/gcs/ptx-mini/runs/model_capacity_v2_20tpp/vsgr4h27
+  - reg.method=kl_pre
+  - reg.synth=True
+  - reg.batch_size=64
+  - reg.buffer=16
+  - stop.num_epochs=100
+  - opt.warmup_tokens=1_000_000_000
+  - opt.lr_decay=cosine
+  - ${args_no_hyphens}
+
+parameters:
+  opt.peak_lr:
+    values: [3.0e-4, 1.0e-3]
+  reg.coeff:
+    values: [1, 3, 10]

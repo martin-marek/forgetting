@@ -1,0 +1,23 @@
+project: ptx-sweeps
+name: model_capacity_v2_finetune_synth
+method: grid
+
+command:
+  - ${env}
+  - WANDB_JOB_TYPE=finetune
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_path=~/gcs/ptx-mini/runs/model_capacity_v2/85rqvdv0
+  - reg.method=kl_pre
+  - reg.synth=True
+  - reg.batch_size=64
+  - reg.buffer=16
+  - opt.peak_lr=1e-4
+  - opt.lr_decay=cosine
+  - stop.num_epochs=10
+  - ${args_no_hyphens}
+
+parameters:
+  reg.coeff:
+    values: [0.01, 0.018, 0.032, 0.056, 0.1, 0.18, 0.32, 0.56, 1, 1.78, 3.16, 5.62, 10] # -> 13x

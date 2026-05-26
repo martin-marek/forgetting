@@ -1,0 +1,16 @@
+project: ptx-sweeps
+name: pretrain_length_v1_pretrain
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_en.bin
+  - model.save_dir=~/gcs/ptx-mini/runs/pretrain_length_v1
+  - opt.lr_decay=cosine
+  - ${args_no_hyphens}
+
+parameters:
+  stop.tokens_per_param:
+    values: [10, 31.6, 100, 316, 1_000, 3_162, 10_000]

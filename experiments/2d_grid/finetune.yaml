@@ -1,0 +1,22 @@
+project: ptx-sweeps
+name: pretrain_finetune_v6c_finetune
+method: grid
+
+command:
+  - ${env}
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/fineweb_math_4096_10/nemotron_math_20M.bin
+  - model.load_dir=~/gcs/ptx-mini/runs/sweep_pretrain_finetune_2d_v6_pretrain
+  - reg.coeff=10
+  - opt.peak_lr=1e-4
+  - stop.target_loss=2.2
+  - log.every_tokens=1_000_000
+  - ${args_no_hyphens}
+
+parameters:
+  model.load_idx:
+    min: 0
+    max: 168
+  reg.method:
+    values: ["null", "kl_pre"]

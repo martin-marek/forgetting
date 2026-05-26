@@ -1,0 +1,23 @@
+project: ptx-sweeps
+name: learning_rate_v2_finetune
+method: grid
+
+command:
+  - ${env}
+  - WANDB_JOB_TYPE=finetune
+  - python
+  - ${envvar:HOME}/ptx-mini/train_single.py
+  - data.path=/dev/shm/c4_10B/c4_es.bin
+  - model.load_dir=~/gcs/ptx-mini/runs/learning_rate_v2
+  - stop.target_loss=3.2
+  - reg.coeff=10
+  - ${args_no_hyphens}
+
+parameters:
+  model.load_idx: # -> 6x
+    min: 0
+    max: 5
+  reg.method:
+    values: ["null", "kl_pre"] # -> 2x
+  opt.peak_lr:
+    values: [1.0e-3, 3.16e-4, 1.0e-4, 3.16e-5, 1.0e-5, 3.16e-6, 1.0e-6] # -> 7x
