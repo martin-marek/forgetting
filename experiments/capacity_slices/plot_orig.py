@@ -254,9 +254,9 @@ def main():
     axs[0].legend(handles=legend_handles(colors, has), frameon=True, loc="upper right", fontsize=8)
 
     for ext in ("png", "pdf"):
-        fig.savefig(out_dir / f"plot.{ext}", dpi=220)
-    print(out_dir / "plot.png")
-    print(out_dir / "plot.pdf")
+        fig.savefig(out_dir / f"plot_orig.{ext}", dpi=220)
+    print(out_dir / "plot_orig.png")
+    print(out_dir / "plot_orig.pdf")
 
 
 if __name__ == "__main__":
