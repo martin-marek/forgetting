@@ -118,7 +118,10 @@ def numeric_sort(df, numeric_cols, sort_col):
 
 
 def plot_slice(ax, df, x_col, xlabel, colors, ylim=None):
-    target = df[(df.state == "finished") & df.target_loss_reached]
+    finished = df[df.state == "finished"]
+    running = df[df.state == "running"]
+    target = finished[finished.target_loss_reached]
+    missed = finished[~finished.target_loss_reached]
     pre = df.groupby(x_col, as_index=False).pretraining_loss.mean().sort_values(x_col)
     best = target.loc[target.groupby(x_col).finetune_end.idxmin()].sort_values(x_col)
 
@@ -163,6 +166,38 @@ def plot_slice(ax, df, x_col, xlabel, colors, ylim=None):
         linewidth=0,
         zorder=1,
     )
+    if not target.empty:
+        ax.scatter(
+            target[x_col],
+            target.finetune_end,
+            s=28,
+            alpha=0.1,
+            color=colors["point_finished"],
+            linewidths=0,
+            zorder=3,
+        )
+    if not missed.empty:
+        ax.scatter(
+            missed[x_col],
+            missed.finetune_end,
+            s=42,
+            alpha=0.15,
+            marker="x",
+            color=colors["point_missed"],
+            linewidths=1.2,
+            zorder=3,
+        )
+    if not running.empty:
+        ax.scatter(
+            running[x_col],
+            running.finetune_end,
+            s=38,
+            alpha=0.2,
+            marker="^",
+            color=colors["point_running"],
+            linewidths=0,
+            zorder=3,
+        )
     ax.plot(
         pre[x_col],
         pre.pretraining_loss,
@@ -244,8 +279,8 @@ def label_forgetting_gap(ax, pre, best, x_col, colors, *, x, x_transform=lambda 
 
     ax.annotate(
         "",
-        xy=(x, y_high - arrow_pad),
-        xytext=(x, y_low + arrow_pad),
+        xy=(x, y_high - 2*arrow_pad),
+        xytext=(x, y_low + 0.5*arrow_pad),
         arrowprops={
             "arrowstyle": "<->",
             "color": colors["forgetting_hatch"],
@@ -303,6 +338,9 @@ def main():
         "after_finetuning_hatch": "#3c944a",
         "pretrain_line": "#4c72b0",
         "finetune_line": "#2f8f45",
+        "point_finished": "#55a868",
+        "point_missed": "#c44e52",
+        "point_running": "#dd8452",
     }
 
     pretrain_df = pretrain_length_points(
