@@ -12,7 +12,7 @@ Data replay greatly reduces forgetting during finetuning. When pretraining data 
 
 We find that forgetting nonetheless persists when the model has little remaining capacity: models pretrained close to saturation cannot absorb new information without overwriting prior knowledge.
 
-<img src="experiments/capacity_slices/plot.png" width="760">
+<img src="experiments/capacity_slices/plot_simple.png" width="760">
 
 Learning rate matters too. Low learning rates reduce forgetting but require substantially more training steps. Replay breaks this tradeoff, enabling fast, high-learning-rate finetuning
 without forgetting.
