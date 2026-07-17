@@ -58,6 +58,15 @@ log:
   eval_every_tokens: 20_000_000
   num_tokens_eval: 1_000_000
   num_examples_eval: null
+  verilog:
+    data_dir: ~/verilog-eval/dataset_spec-to-rtl
+    iverilog: ~/.local/bin/iverilog
+    every: 2             # run on every Nth eval trigger
+    num_problems: null   # null = all that fit max_prompt_tokens
+    temperature: 0.01    # ~greedy (sampler requires temperature > 0)
+    max_prompt_tokens: 896
+    max_new_tokens: 512
+    sim_timeout: 30
 run:
   seed: 0
 """
@@ -154,12 +163,12 @@ def train(cfg) -> None:
             if should_eval:
                 while total_tokens_seen >= next_eval_at:
                     next_eval_at += cfg.log.eval_every_tokens
-                eval_metrics |= run_evals(cfg.log.evals, model, weights_pi, ds_train_eval, ds_reg_eval, None, run_dir, step, epoch, tokens_per_batch, cfg.train.split, cfg.log.num_tokens_eval, cfg.log.num_examples_eval)
+                eval_metrics |= run_evals(cfg.log.evals, model, weights_pi, ds_train_eval, ds_reg_eval, None, run_dir, step, epoch, tokens_per_batch, cfg.train.split, cfg.log.num_tokens_eval, cfg.log.num_examples_eval, verilog_cfg=cfg.log.verilog)
                 if make_valid is not None:
                     eval_metrics |= eval_lm_valid(model, make_valid)
                 if ema_weights is not None:
                     train_weights, model.weights = model.weights, ema_weights
-                    ema_eval_metrics = run_evals(cfg.log.evals, model, weights_pi, ds_train_eval, ds_reg_eval, None, run_dir / "ema", step, epoch, tokens_per_batch, cfg.train.split, cfg.log.num_tokens_eval, cfg.log.num_examples_eval)
+                    ema_eval_metrics = run_evals(cfg.log.evals, model, weights_pi, ds_train_eval, ds_reg_eval, None, run_dir / "ema", step, epoch, tokens_per_batch, cfg.train.split, cfg.log.num_tokens_eval, cfg.log.num_examples_eval, verilog_cfg=cfg.log.verilog)
                     if make_valid is not None:
                         ema_eval_metrics |= eval_lm_valid(model, make_valid)
                     model.weights = train_weights

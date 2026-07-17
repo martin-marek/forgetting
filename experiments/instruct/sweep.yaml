@@ -5,7 +5,7 @@ method: grid
 command:
   - ${env}
   - python
-  - ${envvar:HOME}/ptx/train_lm.py
+  - ${envvar:HOME}/forgetting/experiments/instruct/ptx/train_lm.py
   - model.source=alpindale/Llama-3.2-1B-Instruct
   - model.tp_size=2
   - train.dataset=bnadimi/PyraNet-Verilog
@@ -15,7 +15,7 @@ command:
   - train.num_tokens_valid=20_000_000
   - opt.lr=1e-5
   - opt.n_epochs=5
-  - log.evals=[train_lm,reg_lm,chat_mcq]
+  - log.evals=[train_lm,reg_lm,chat_mcq,verilog]
   - reg.dataset=allenai/dolmino-mix-1124
   - reg.split=train
   - reg.seq_len=512

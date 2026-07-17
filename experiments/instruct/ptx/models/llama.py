@@ -107,7 +107,7 @@ def _load_template(model_id, hf_ckpt_dir, allow_patterns=None):
     if cfg.get("model_type") != "llama":
         raise ValueError(f"Only Llama checkpoints are supported, got model_type={cfg.get('model_type')}")
     tokenizer = AutoTokenizer.from_pretrained(source)
-    tokenizer.pad_token_id = 0
+    tokenizer.pad_token_id = 128004
     return source, tokenizer, cfg
 
 

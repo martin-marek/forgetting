@@ -99,6 +99,7 @@ def run_evals(
     train_split,
     num_tokens_eval,
     num_examples_eval=None,
+    verilog_cfg=None,
 ):
     if isinstance(eval_names, str):
         raise TypeError('log_evals must be a list or tuple, e.g. --log_evals=\'["core"]\'')
@@ -110,6 +111,7 @@ def run_evals(
         "inspect",
         "chat_mcq",
         "core",
+        "verilog",
         *custom.BENCHMARKS,
         *instruction.BENCHMARKS,
     }
@@ -139,6 +141,13 @@ def run_evals(
 
     if "inspect" in eval_names:
         metrics |= eval_inspect(model, Path(run_dir) / "eval_logs" / f"step_{step}", batch_size=512, seq_len=1024, limit=default_num_examples)
+
+    if "verilog" in eval_names:
+        if verilog_cfg is None:
+            raise ValueError("verilog eval requires the log.verilog config block")
+        from evals import verilog  # lazy: keeps iverilog/benchmark deps out of other runs
+
+        metrics |= verilog.run_eval(model, verilog_cfg, step, run_dir=run_dir)
 
     if "chat_mcq" in eval_names:
         metrics |= instruction.run_set(

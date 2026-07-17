@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 __pycache__
 experiments/*/misc
+*.log
+wandb
